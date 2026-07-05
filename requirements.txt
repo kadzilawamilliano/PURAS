@@ -1,0 +1,10 @@
+streamlit
+pandas
+numpy
+openpyxl
+plotly
+scikit-learn
+catboost
+scipy
+matplotlib
+xlsxwriter
