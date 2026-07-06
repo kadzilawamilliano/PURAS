@@ -29,42 +29,26 @@ REQUIRED_SHEETS = [
     "Claim_Payments"
 ]
 
-
 class DataLoader:
-    """
-    Loads all datasets from an Excel workbook.
-    """
 
-    def __init__(self, filepath):
-        self.filepath = Path(filepath)
+    def __init__(self, file):
+        self.file = file
         self.data = {}
 
     def load(self):
 
-        if not self.filepath.exists():
-            raise FileNotFoundError(
-                f"Workbook not found:\n{self.filepath}"
-            )
-
-        excel = pd.ExcelFile(self.filepath)
+        excel = pd.ExcelFile(self.file)
 
         missing = [
-            sheet
-            for sheet in REQUIRED_SHEETS
+            sheet for sheet in REQUIRED_SHEETS
             if sheet not in excel.sheet_names
         ]
 
         if missing:
-            raise ValueError(
-                f"Missing worksheets: {missing}"
-            )
+            raise ValueError(f"Missing worksheets: {missing}")
 
         for sheet in REQUIRED_SHEETS:
-
-            self.data[sheet] = pd.read_excel(
-                excel,
-                sheet_name=sheet
-            )
+            self.data[sheet] = pd.read_excel(excel, sheet_name=sheet)
 
         return self.data
 
