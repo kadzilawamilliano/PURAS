@@ -1,14 +1,26 @@
 import streamlit as st
-from core.loader import load_data
-from core.validator import validate_data
+from core.loader import DataLoader
+from core.validator import DataValidator
 
 st.title("PURAS")
 
-uploaded_file = st.file_uploader("Upload an Excel file")
+file = st.file_uploader("Upload SLAMS Excel Workbook", type=["xlsx"])
 
-if uploaded_file:
-    df = load_data(uploaded_file)
-    result = validate_data(df)
+if file is not None:
+    # Save uploaded file temporarily
+    with open("temp.xlsx", "wb") as f:
+        f.write(file.getbuffer())
 
-    st.write(df.head())
-    st.write(result)
+    # Load datasets
+    loader = DataLoader("temp.xlsx")
+    datasets = loader.load()
+
+    st.subheader("Dataset Summary")
+    st.dataframe(loader.summary())
+
+    # Validate datasets
+    validator = DataValidator(datasets)
+    report = validator.validate()
+
+    st.subheader("Validation Report")
+    st.dataframe(report)
